@@ -1,0 +1,60 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Parâmetros dos Sinais (Unificados para compatibilidade)
+fs = 4000                          
+t = np.linspace(0, 1, fs)          
+
+fc = 35                            # Frequência da Portadora
+fm = 3                             # Frequência do Sinal Modulante (Informação)
+
+Ac = 1.0                           
+Am = 0.7                           # Amplitude da informação ajustada para evitar sobremodulação no AM
+beta = 8.0                         # Índice de modulação FM
+
+# 2. Geração dos Sinais
+modulating = Am * np.sin(2 * np.pi * fm * t)
+carrier = Ac * np.sin(2 * np.pi * fc * t)
+modulated_am = (Ac + modulating) * np.sin(2 * np.pi * fc * t)
+modulated_fm = Ac * np.sin(2 * np.pi * fc * t + beta * np.sin(2 * np.pi * fm * t))
+
+# 3. Construção dos Gráficos (4 subplots verticais com proporções personalizadas)
+fig, axs = plt.subplots(4, 1, figsize=(10, 9), sharex=True, 
+                       gridspec_kw={'height_ratios': [1.4, 1, 1.2, 1.2]})
+
+# Definição das cores
+cor_entrada = '#1E293B'      
+cor_am = '#1A365D'           
+cor_fm = '#7A1C32'
+
+# Primeiro Gráfico: Sinal Modulante (Informação) - Destacado com linha mais grossa
+axs[0].plot(t, modulating, color=cor_entrada, linewidth=2.5)
+axs[0].set_ylabel('Informação\n(Modulante)', fontsize=10, fontweight='bold')
+axs[0].grid(True, linestyle=':', alpha=0.5, color='#CBD5E1')
+
+# Segundo Gráfico: Portadora
+axs[1].plot(t, carrier, color=cor_entrada, linewidth=1.2)
+axs[1].set_ylabel('Portadora', fontsize=10, fontweight='bold')
+axs[1].grid(True, linestyle=':', alpha=0.5, color='#CBD5E1')
+
+# Terceiro Gráfico: Sinal Modulado em Amplitude (AM)
+axs[2].plot(t, modulated_am, color=cor_am, linewidth=1.2)
+axs[2].set_ylabel('Saída AM', fontsize=10, fontweight='bold')
+axs[2].grid(True, linestyle=':', alpha=0.5, color='#CBD5E1')
+
+# Quarto Gráfico: Sinal Modulado em Frequência (FM)
+axs[3].plot(t, modulated_fm, color=cor_fm, linewidth=1.2)
+axs[3].set_ylabel('Saída FM', fontsize=10, fontweight='bold')
+axs[3].set_xlabel('Tempo (s)', fontsize=10)
+axs[3].grid(True, linestyle=':', alpha=0.5, color='#CBD5E1')
+
+# Estilização das bordas para o padrão de relatório técnico
+for ax in axs:
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#94A3B8')
+    ax.spines['bottom'].set_color('#94A3B8')
+    ax.tick_params(colors='#64748B', labelsize=9)
+
+plt.tight_layout()
+plt.show()
